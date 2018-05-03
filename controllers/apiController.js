@@ -26,21 +26,38 @@ module.exports = function(app) {
        });
         
     });
-    //API to craete or update a ToDo
+
+    app.get('/api/todos', function(req, res) {
+        
+        Todos.find(function(err, todos) {
+            if (err) throw err;
+            res.send(todos);
+        });
+        
+    });
+
+    //API to create or update a ToDo
     app.post('/api/todo', function(req, res) {
         
         if (req.body.id) {
-            Todos.findByIdAndUpdate(req.body.id, { todo: req.body.todo, isDone: req.body.isDone, hasAttachment: req.body.hasAttachment }, function(err, todo) {
+
+            var toDoData = {
+                            todo: req.body.todo, 
+                            isDone: req.body.isDone,
+                            hasAttachment: req.body.hasAttachment 
+                            };
+
+            Todos.findByIdAndUpdate(req.body.id, toDoData, 
+            function(err, todo) {
                 if (err) throw err;
                 
                 res.send('Success');
             });
         }
-        
+        // Create a new ToDo if ID does not exist in the request
         else {
-           
            var newTodo = Todos({
-               username: 'test',
+               username: req.body.user,
                todo: req.body.todo,
                isDone: req.body.isDone,
                hasAttachment: req.body.hasAttachment
@@ -48,19 +65,15 @@ module.exports = function(app) {
            newTodo.save(function(err) {
                if (err) throw err;
                res.send('Success');
-           });
-            
+           });   
         }
-        
     });
     
     app.delete('/api/todo', function(req, res) {
-        
+
         Todos.findByIdAndRemove(req.body.id, function(err) {
             if (err) throw err;
             res.send('Success');
         })
-        
     });
-    
 }

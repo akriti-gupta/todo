@@ -1,7 +1,7 @@
 var Todos = require('../models/todoModel');
 
-module.exports = function(app) {
-   app.get('/api/setupTodos', function(req, res) {
+module.exports = function(req,res,next) {
+   //app.get('/api/setupTodos', function(req, res) {
        
        var setUpTodos = [
            {
@@ -26,6 +26,6 @@ module.exports = function(app) {
        Todos.create(setUpTodos, function(err, results) {
            res.send(results);
        }); 
-   });
+  // });
     
 }
